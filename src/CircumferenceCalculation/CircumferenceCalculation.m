@@ -78,10 +78,10 @@ classdef CircumferenceCalculation
                 mergedArcs = obj.mergeArcsForCircle(circle);
                 circumferenceTable(i,1:length(mergedArcs)) = mergedArcs;
             end
-
+            
         end
-       
-        function mergedArcs = mergeArcsForCircle(~, circle)     
+        
+        function mergedArcs = mergeArcsForCircle(~, circle)
             % Entferne die Arc(0,360) Einträge
             
             % Sortiere die Bogenstücke nach Startpunkt und entferne 0/360er
@@ -90,8 +90,8 @@ classdef CircumferenceCalculation
             for ii = 1:length(circle)
                 %if circle(ii).startPoint == 0 && circle(ii).endPoint == 360
                 %else
-                    arcsOfCircle1(j) = circle(ii);
-                    j = j + 1;
+                arcsOfCircle1(j) = circle(ii);
+                j = j + 1;
                 %end
             end
             
@@ -107,15 +107,15 @@ classdef CircumferenceCalculation
             end
             
             % Entferne doppelte Einträge
-            s(diff(s) == 0) = []; % eventuell nicht notwendig
+            s(diff(s) == 0) = [];
             
             % Speichere alle Startwerte in Array e und sortiere sie
             e = zeros(1, length(arcsOfCircle1_sorted));
             for i = 1:length(arcsOfCircle1_sorted)
                 e(i) = arcsOfCircle1_sorted(i).endPoint;
-            end 
+            end
             e = sort(e);
-            e(diff(e) == 0) = []; % eventuell nicht notwendig
+            e(diff(e) == 0) = [];
             
             % Entferne diejenigen Start- und Entpunkte, die im überlappten
             % Bereich liegen
@@ -133,29 +133,17 @@ classdef CircumferenceCalculation
             
             % Fasse die Bogenstücke zu zusammenhängenden Stücken zusammen
             mergedArcs = Arc.empty(length(arcsOfCircle1_sorted),0);
+            
             k = 1;
-            
-            for j = 1:length(e)
-                tempS = -1;
-                for i = 1:length(s)
-                    if s(i) > e(j)
-                        % StartPoint ohne Endpoint? Nehme nächsten Endpoint
-                        % nach dem Phasenübergang mit
-                        if i == length(s) && tempS == -1 
-                            mergedArcs(k) = Arc(s(i),e(1));
-                            k = k + 1;
-                        end
-                        continue
-                    else
-                        tempS = s(i);
-                    end
-                end
-                if tempS > -1
-                    mergedArcs(k) = Arc(tempS,e(j));
+            for i = 1:length(s)
+                index = find(e>s(i),1);
+                if ~isempty(index)
+                    mergedArcs(k) = Arc(s(i),e(index));
                     k = k + 1;
-                end     
+                else
+                    mergedArcs(k) = Arc(s(i),e(1));
+                end
             end
-            
         end
         
     end
