@@ -2,7 +2,7 @@ function drawArc(center,arcAngles,radius)
     % Define parameters of the arc.
     xCenter = center(1);
     yCenter = center(2); 
-    disp([arcAngles.startPoint, arcAngles.endPoint])
+    %disp([arcAngles.startPoint, arcAngles.endPoint])
     % Define the angle theta as going from 30 to 150 degrees in 100 steps.
     if arcAngles.endPoint - arcAngles.startPoint > 0
         theta = 360 - linspace(arcAngles.startPoint, arcAngles.endPoint, 100);
